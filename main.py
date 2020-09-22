@@ -3,7 +3,6 @@ import torch.optim as optim
 import numpy as np
 import time
 import os
-import matplotlib.pyplot as plt
 import NBNTM
 import GNBNTM
 import utils
@@ -103,7 +102,16 @@ def main():
     train_list, train_mat, train_count = utils.data_set(data_dir + 'train.feat', vocab_num)
     test_list, test_mat, test_count = utils.data_set(data_dir + 'test.feat', vocab_num)
     
-    # result dir setting
+    # auxiliary dir setting
+    if not os.path.exists('./result'):
+        os.mkdir('./result')
+        os.mkdir('./result/NBNTM')
+        os.mkdir('./result/GNBNTM')
+    if not os.path.exists('./checkpoint'):
+        os.mkdir('./checkpoint')
+        os.mkdir('./checkpoint/NBNTM')
+        os.mkdir('./checkpoint/GNBNTM')
+
     flag_str = (data_name + '_shape_' + str(shape_prior) + '_scale_' + str(scale_prior)
                 + '_K_' + str(topic_num) + '_V_' + str(vocab_num) + '_H_' + str(hidden_num)
                 + '_batch_' + str(batch_size) + '_lr_' + str(learning_rate) + '_epoch_' + str(epochs))
@@ -166,7 +174,6 @@ def main():
 
     # save topic words
     utils.print_topic_word('data/' + data_name + '/' + data_name + '.vocab', model + '_topic_words.txt', net.out_fc.weight.detach().cpu().t(), 15)
-    print(len(auto_select_topics(net, np.concatenate((train_mat, test_mat)))))
 
 
 if __name__ == '__main__':
